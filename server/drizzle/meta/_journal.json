@@ -8,6 +8,13 @@
       "when": 1730362436517,
       "tag": "0000_tough_firestar",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1730367706333,
+      "tag": "0001_watery_sentinels",
+      "breakpoints": true
     }
   ]
 }
