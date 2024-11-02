@@ -30,5 +30,5 @@ export function requireRole(role: string) {
   };
 }
 
-export const adminOnly = [authMiddleware, requireRole("admin")];
+export const adminOnly = [authMiddleware, requireRole("ADMIN")];
 export const authenticated = [authMiddleware];
