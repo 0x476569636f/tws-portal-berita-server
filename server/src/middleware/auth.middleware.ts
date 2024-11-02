@@ -22,7 +22,8 @@ export async function authMiddleware(c: Context, next: Next) {
 export function requireRole(role: string) {
   return async function (c: Context, next: Next) {
     const user = c.get("user");
-    if (user !== !role.includes(user.role)) {
+
+    if (!user || !role.includes(user.role)) {
       return c.json({ message: "Forbidden" }, 401);
     }
 
