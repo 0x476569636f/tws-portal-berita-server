@@ -35,10 +35,10 @@ app.post("/register", zValidator("json", RegisterSchema), async (c) => {
       password: hashedPassword,
     });
 
-    return c.json({ message: "Berhasil mendaftar" }, 201);
+    return c.json({ success: true, message: "Berhasil mendaftar" }, 201);
   } catch (error) {
     console.error(error);
-    return c.json({ message: "Terjadi kesalahan" }, 500);
+    return c.json({ success: false, message: "Terjadi kesalahan" }, 500);
   }
 });
 
@@ -72,6 +72,7 @@ app.post("/login", zValidator("json", LoginSchema), async (c) => {
     });
 
     return c.json({
+      success: true,
       token,
       user: {
         id: user.id,
@@ -81,7 +82,7 @@ app.post("/login", zValidator("json", LoginSchema), async (c) => {
     });
   } catch (error) {
     console.error(error);
-    return c.json({ message: "Terjadi kesalahan" }, 500);
+    return c.json({ success: false, message: "Terjadi kesalahan" }, 500);
   }
 });
 
