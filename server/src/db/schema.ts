@@ -1,6 +1,5 @@
 import { relations, sql } from "drizzle-orm";
 import {
-  date,
   integer,
   pgEnum,
   pgTable,
