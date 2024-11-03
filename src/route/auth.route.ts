@@ -77,6 +77,7 @@ app.post("/login", zValidator("json", LoginSchema), async (c) => {
       user: {
         id: user.id,
         name: user.name,
+        email: user.email,
         role: user.role,
       },
     });
