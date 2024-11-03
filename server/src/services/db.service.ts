@@ -1,15 +1,16 @@
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { Pool } from "@neondatabase/serverless";
-import { users } from "@/db/schema";
-import type { UsersTable, NewUser } from "@/db/schema";
-import { asc, eq } from "drizzle-orm";
+import { berita, users } from "@/db/schema";
+import type { UsersTable, NewUser, NewBerita, NewsWithUser } from "@/db/schema";
+import * as schema from "@/db/schema";
+import { asc, desc, eq } from "drizzle-orm";
 
 export class DatabaseService {
-  private db: ReturnType<typeof drizzle>;
+  private db: ReturnType<typeof drizzle<typeof schema>>;
 
   constructor(databaseUrl: string) {
     const pool = new Pool({ connectionString: databaseUrl });
-    this.db = drizzle(pool);
+    this.db = drizzle(pool, { schema });
   }
 
   async createUser(user: NewUser): Promise<UsersTable> {
@@ -53,5 +54,52 @@ export class DatabaseService {
       .returning();
 
     return deletedUser || null;
+  }
+
+  async createNews(news: NewBerita): Promise<NewBerita> {
+    const [NewBerita] = await this.db.insert(berita).values(news).returning();
+
+    return NewBerita;
+  }
+
+  async getAllNews(): Promise<NewsWithUser[]> {
+    const allNews = await this.db.query.berita.findMany({
+      with: {
+        user: { columns: { password: false } },
+      },
+      orderBy: desc(berita.createdAt),
+    });
+    return allNews as NewsWithUser[];
+  }
+
+  async getNewsByLimit(limit: number): Promise<NewsWithUser[]> {
+    const allNews = await this.db.query.berita.findMany({
+      with: {
+        user: { columns: { password: false } },
+      },
+      orderBy: desc(berita.updatedAt),
+      limit: limit,
+    });
+    return allNews as NewsWithUser[];
+  }
+
+  async findNewsById(id: number): Promise<NewsWithUser | null> {
+    const result = await this.db.query.berita.findFirst({
+      where: (berita) => eq(berita.id, id),
+      with: {
+        user: true,
+      },
+    });
+
+    return result || null;
+  }
+
+  async deleteNews(id: number): Promise<NewBerita | null> {
+    const [deletedNews] = await this.db
+      .delete(berita)
+      .where(eq(berita.id, id))
+      .returning();
+
+    return deletedNews || null;
   }
 }
