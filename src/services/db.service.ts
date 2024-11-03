@@ -5,6 +5,8 @@ import type { UsersTable, NewUser, NewBerita, NewsWithUser } from "@/db/schema";
 import * as schema from "@/db/schema";
 import { asc, desc, eq } from "drizzle-orm";
 
+type PublicUser = Omit<UsersTable, "password">;
+
 export class DatabaseService {
   private db: ReturnType<typeof drizzle<typeof schema>>;
 
@@ -19,9 +21,15 @@ export class DatabaseService {
     return NewUser;
   }
 
-  async getAllUsers(): Promise<UsersTable[]> {
+  async getAllUsers(): Promise<PublicUser[]> {
     const allUsers = await this.db
-      .select()
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+        created_at: users.created_at,
+      })
       .from(users)
       .orderBy(asc(users.created_at));
     return allUsers;
@@ -37,9 +45,15 @@ export class DatabaseService {
     return res[0] || null;
   }
 
-  async findUserById(id: number): Promise<UsersTable | null> {
+  async findUserById(id: number): Promise<PublicUser | null> {
     const result = await this.db
-      .select()
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+        created_at: users.created_at,
+      })
       .from(users)
       .where(eq(users.id, id))
       .limit(1);
