@@ -8,34 +8,6 @@ import { adminOnly } from "@/middleware/auth.middleware";
 
 const app = new Hono<{ Bindings: Env }>();
 
-app.get("/users", ...adminOnly, async (c) => {
-  try {
-    const dbService = new DatabaseService(c.env.DATABASE_URL);
-    const users = await dbService.getAllUsers();
-
-    return c.json({ success: true, users });
-  } catch (error) {
-    console.error(error);
-    return c.json({ success: false, message: "Terjadi kesalahan" }, 500);
-  }
-});
-
-app.get("/users/:id{[0-9]+}", ...adminOnly, async (c) => {
-  try {
-    const userId = Number(c.req.param("id"));
-    const dbService = new DatabaseService(c.env.DATABASE_URL);
-    const user = await dbService.findUserById(userId);
-
-    if (!user) {
-      return c.json({ message: "User tidak ditemukan" }, 404);
-    }
-    return c.json({ success: true, user });
-  } catch (error) {
-    console.error(error);
-    return c.json({ success: false, message: "Terjadi kesalahan" }, 500);
-  }
-});
-
 app.delete("/users/:id{[0-9]+}", ...adminOnly, async (c) => {
   try {
     const userId = Number(c.req.param("id"));
