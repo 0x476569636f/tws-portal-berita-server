@@ -47,7 +47,9 @@ export const berita = pgTable("berita", {
     .defaultNow()
     .$onUpdate(() => sql`CURRENT_TIMESTAMP`)
     .notNull(),
-  userId: integer("user_id").references(() => users.id),
+  userId: integer("user_id").references(() => users.id, {
+    onDelete: "cascade",
+  }),
 });
 
 // Relations
@@ -72,3 +74,7 @@ export type NewKategori = typeof kategori.$inferInsert;
 
 export type Berita = typeof berita.$inferSelect;
 export type NewBerita = typeof berita.$inferInsert;
+
+export type NewsWithUser = typeof berita.$inferSelect & {
+  user: typeof users.$inferSelect | null;
+};
