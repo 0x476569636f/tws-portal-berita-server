@@ -116,4 +116,18 @@ export class DatabaseService {
 
     return deletedNews || null;
   }
+
+  async getAllCategories() {
+    const categories = await this.db.query.kategori.findMany();
+    return categories;
+  }
+
+  async deleteCategory(id: number) {
+    const [deletedCategory] = await this.db
+      .delete(schema.kategori)
+      .where(eq(schema.kategori.id, id))
+      .returning();
+
+    return deletedCategory || null;
+  }
 }
