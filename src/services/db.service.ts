@@ -81,7 +81,7 @@ export class DatabaseService {
       with: {
         user: { columns: { password: false } },
       },
-      orderBy: [desc(berita.createdAt)],
+      orderBy: (berita, { desc }) => [desc(berita.createdAt)],
     });
     return allNews as NewsWithUser[];
   }
@@ -91,7 +91,7 @@ export class DatabaseService {
       with: {
         user: { columns: { password: false } },
       },
-      orderBy: [desc(berita.createdAt)],
+      orderBy: (berita, { desc }) => [desc(berita.createdAt)],
       limit: limit,
     });
     return allNews as NewsWithUser[];
